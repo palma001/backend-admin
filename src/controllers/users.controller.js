@@ -1,15 +1,23 @@
 const { 
+  getUsersFromFirebase,
   getUserFromFirebase,
   createFromFirebase,
   deleteFromFirebase,
-  updateFromFirebase 
+  updateFromFirebase ,
+  updatePasswordFromFirebase
 } = require('../models/User')
 
 const userCtrl = {}
 
 userCtrl.getUsers = async (req, res) => {
-  const users = await getUserFromFirebase(req.query)
+  const users = await getUsersFromFirebase(req.query)
   res.json(users)
+}
+
+userCtrl.getUser = async (req, res) => {
+  const { id } = req.params
+  const user = await getUserFromFirebase(id)
+  res.json(user)
 }
 
 userCtrl.createUser = async (req, res) => {
@@ -29,4 +37,9 @@ userCtrl.deleteUser = async (req, res) => {
   res.json('User deleted')
 }
 
+userCtrl.updatePassword = async (req, res) => {
+  const { id } = req.params
+  let user = await updatePasswordFromFirebase(id, req.body.password)
+  res.json(user)
+}
 module.exports = userCtrl
