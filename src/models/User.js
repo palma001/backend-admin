@@ -1,4 +1,5 @@
 var admin = require('firebase-admin')
+
 var db = admin.database()
 
 const getUserFromFirebase = (query) => {
@@ -9,12 +10,12 @@ const getUserFromFirebase = (query) => {
   }
   return new Promise((resolve, reject) => {
     try {
-      const Entry = db.ref('users')
+      const user = db.ref('users')
       // .orderByChild('apellido')
         .limitToLast(Number(query.pageSize))
-      Entry.once('value', (users) => {
-        users.forEach((user) => {
-          listUsers.data.push(user.val())
+      user.on('value', (users) => {
+        users.forEach((data) => {
+          listUsers.data.push(data.val())
           listUsers.metadata.totalElements = users.numChildren()
           listUsers.metadata.size = listUsers.data.length
         })
@@ -26,10 +27,19 @@ const getUserFromFirebase = (query) => {
   })
 }
 const createFromFirebase = (data) => {
-  const Entry = admin.database().ref('users/' + data.name)
+  const user = admin.database().ref('users/' + data.name)
+  var storageRef = admin.storage().ref()
+  var mountainsRef = storageRef.child('mountains.jpg')
+  var mountainImagesRef = storageRef.child('images/mountains.jpg')
+  mountainsRef.name === mountainImagesRef.name            // true
+  mountainsRef.fullPath === mountainImagesRef.fullPath    // false
+  var file = 'Note.js'
+  ref.put(file).then(function(snapshot) {
+    console.log('Uploaded a blob or file!')
+  })
   return new Promise((resolve, reject) => {
     try {
-      Entry.set(data)
+      user.set(data)
       resolve(data)
     } catch (e) {
       reject(e)
@@ -37,11 +47,11 @@ const createFromFirebase = (data) => {
   })
 }
 const updateFromFirebase = (id, data) => {
-  const Entry = admin.database().ref('users/' + id)
+  const user = admin.database().ref('users/' + id)
   return new Promise((resolve, rejact) => {
     try {
-      Entry.update(data)
-      resolve(Entry.key)
+      user.update(data)
+      resolve(user.key)
     } catch(e) {
       rejact(e)
     }
@@ -49,10 +59,10 @@ const updateFromFirebase = (id, data) => {
 }
 
 const deleteFromFirebase = (id) => {
-  const Entry = admin.database().ref('users/' + id)
+  const user = admin.database().ref('users/' + id)
   return new Promise((resolve, rejact) => {
     try {
-      Entry.remove()
+      user.remove()
       resolve('User deleted successfull')
     } catch(e) {
       rejact(e)
