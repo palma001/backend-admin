@@ -10,7 +10,6 @@ const {
 } = require('../models/User')
 
 const userCtrl = {}
-
 userCtrl.getUsers = async (req, res) => {
   const users = await getUsersFromFirebase(req.query)
   res.json(users)
