@@ -107,11 +107,37 @@ const updatePasswordFromFirebase = (id, email) => {
   })
 }
 
+const getNumberPhoneFromFirebase = (phone) => {
+  return new Promise((resolve, reject) => {
+    admin.auth().getUserByPhoneNumber(phone)
+      .then(function(userRecord) {
+        resolve(userRecord.toJSON())
+      })
+      .catch(function(error) {
+        reject(error)
+      })
+  })
+}
+
+const getEmailFromFirebase = (email) => {
+  return new Promise((resolve, reject) => {
+    admin.auth().getUserByEmail(email)
+      .then(function(userRecord) {
+        resolve(userRecord.toJSON())
+      })
+      .catch(function(error) {
+        reject(error)
+      })
+  })
+}
+
 module.exports = {
   getUsersFromFirebase,
   getUserFromFirebase,
   createFromFirebase,
   updateFromFirebase,
   deleteFromFirebase,
-  updatePasswordFromFirebase
+  updatePasswordFromFirebase,
+  getNumberPhoneFromFirebase,
+  getEmailFromFirebase
 }
