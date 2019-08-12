@@ -45,12 +45,11 @@ const createFromFirebase = (data) => {
   return new Promise((resolve, reject) => {
     try {
       admin.auth().createUser(data)
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
+        .then((userRecord) => {
           resolve(userRecord)
         })
-        .catch(function(error) {
-          reject(error)
+        .catch((error) => {
+          resolve(error)
         })
     } catch (e) {
       reject(e)
@@ -66,7 +65,7 @@ const updateFromFirebase = (id, data) => {
           resolve(userRecord.toJSON())
         })
         .catch(function(error) {
-          rejact('Error updating user:', error)
+          resolve(error)
         })
     } catch(e) {
       rejact(e)

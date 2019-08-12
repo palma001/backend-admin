@@ -56,4 +56,5 @@ userCtrl.getEmail = async (req, res) => {
   let user = await getEmailFromFirebase(email)
   res.json(user)
 }
+
 module.exports = userCtrl

@@ -29,4 +29,5 @@ router.route('/phone/:phone')
 
 router.route('/email/:email')
   .get(getEmail)
+
 module.exports = router
