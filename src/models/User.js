@@ -141,28 +141,32 @@ const getEmailFromFirebase = (email) => {
 }
 
 function addImage () {
-  var filename = 'C:/Users/develop01/Pictures/joshua-newton-305353.jpg'
-  storage
-    .upload(filename)
-    .then((res) => {
-      console.log(res.metadata)
-    })
-    .catch(err => {
-      console.error('ERROR:', err)
+  var filename = 'C:/Users/develop01/Pictures/luigi-colonna-351099.jpg'
+  const options = {
+    destination: 'profile',
+    resumable: true,
+    validation: 'crc32c',
+    metadata: {
+      metadata: {
+        event: 'Fall trip to the zoo'
+      }
+    }
+  }
+  storage.upload(filename, options)
+    .then((data) => {
+      const file = data[0]
+      console.log(file.metadata.mediaLink)
     })
 }
 
 function getImage () {
-  storage.getMetadata()
-    .then((res) => {
-      res.forEach(file => {
-        console.log(file.metadata)
-      })
-    })
+  storage.get().then(function(data) {
+    console.log(data[1])
+  })
 }
 getImage()
 
-// addImage()
+addImage()
 
 module.exports = {
   getUsersFromFirebase,
