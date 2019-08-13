@@ -18,13 +18,17 @@ userCtrl.getUsers = async (req, res) => {
 userCtrl.getUser = async (req, res) => {
   const { id } = req.params
   const user = await getUserFromFirebase(id)
-  res.status(200).json(user)
+  if (user.code) {
+    res.status(404).json(user)
+  } else {
+    res.status(200).json(user)
+  }
 }
 
 userCtrl.createUser = async (req, res) => {
   const user = await createFromFirebase(req.body)
   if (user.code) {
-    res.status(409).json(user)
+    res.status(400).json(user)
   } else {
     res.status(201).json(user)
   }
@@ -34,7 +38,7 @@ userCtrl.updateUser = async (req, res) => {
   const { id } = req.params
   const user = await updateFromFirebase(id, req.body)
   if (user.code) {
-    res.status(409).json(user)
+    res.status(400).json(user)
   } else {
     res.status(201).json(user)
   }
@@ -42,15 +46,19 @@ userCtrl.updateUser = async (req, res) => {
 
 userCtrl.deleteUser = async (req, res) => {
   const { id } = req.params
-  await deleteFromFirebase(id)
-  res.json('User deleted')
+  const user = await deleteFromFirebase(id)
+  if (user.code) {
+    res.status(404).json(user)
+  } else {
+    res.status(201).send('User deleted')
+  }
 }
 
 userCtrl.getNumberPhone = async (req, res) => {
   const { phone } =  req.params
   let user = await getNumberPhoneFromFirebase(phone)
   if (user.code) {
-    res.status(204).json(user)
+    res.status(400).json(user)
   } else {
     res.status(200).json(user)
   }
@@ -60,7 +68,7 @@ userCtrl.getEmail = async (req, res) => {
   const { email } = req.params
   let user = await getEmailFromFirebase(email)
   if (user.code) {
-    res.status(204).json(user)
+    res.status(400).json(user)
   } else {
     res.status(200).json(user)
   }

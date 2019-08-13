@@ -34,7 +34,7 @@ const getUserFromFirebase = (id) => {
           resolve(userRecord.toJSON())
         })
         .catch(function(error) {
-          reject(error)
+          resolve(error)
         })
     } catch(e) {
       reject(e)
@@ -79,10 +79,10 @@ const deleteFromFirebase = (id) => {
     try {
       admin.auth().deleteUser(id)
         .then(function() {
-          resolve ('Successfully deleted user')
+          resolve('Successfully deleted user')
         })
         .catch(function(error) {
-          rejact('Error deleting user:', error)
+          resolve(error)
         })
     } catch(e) {
       rejact(e)
@@ -109,25 +109,33 @@ const updatePasswordFromFirebase = (id, email) => {
 
 const getNumberPhoneFromFirebase = (phone) => {
   return new Promise((resolve, reject) => {
-    admin.auth().getUserByPhoneNumber(phone)
-      .then(function(userRecord) {
-        resolve(userRecord.toJSON())
-      })
-      .catch(function(error) {
-        reject(error)
-      })
+    try { 
+      admin.auth().getUserByPhoneNumber(phone)
+        .then(function(userRecord) {
+          resolve(userRecord.toJSON())
+        })
+        .catch(function(error) {
+          resolve(error)
+        })
+    } catch(e) {
+      reject(e)
+    }
   })
 }
 
 const getEmailFromFirebase = (email) => {
   return new Promise((resolve, reject) => {
-    admin.auth().getUserByEmail(email)
-      .then(function(userRecord) {
-        resolve(userRecord.toJSON())
-      })
-      .catch(function(error) {
-        reject(error)
-      })
+    try {
+      admin.auth().getUserByEmail(email)
+        .then(function(userRecord) {
+          resolve(userRecord.toJSON())
+        })
+        .catch(function(error) {
+          resolve(error)
+        })
+    } catch(e) {
+      reject(e)
+    }
   })
 }
 

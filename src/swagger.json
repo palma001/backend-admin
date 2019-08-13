@@ -21,7 +21,7 @@
       "description": "Operations about user",
       "externalDocs": {
         "description": "Find out more about our store",
-        "url": "http://localhost:4000/api/users"
+        "url": "http://localhost:4000"
       }
     }
   ],
@@ -30,7 +30,7 @@
     "https"
   ],
   "paths": {
-    "/users/": {
+    "/users": {
       "get": {
         "tags": [
           "Users"
@@ -58,75 +58,6 @@
           }
         }
       },
-      "put": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Updated user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "name that need to be updated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Updated user object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid user supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Delete user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "deleteUser",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be deleted",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/users": {
       "post": {
         "tags": [
           "Users"
@@ -148,7 +79,183 @@
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "updateUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id that need to be updated",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid user supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Updated user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "updateUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id that need to be updated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Updated user object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid user supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "deleteUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id that needs to be deleted",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid id supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users/email/{email}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user for email",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "getUsersEmail",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "email that need to be updated",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid user supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users/phone/{phone}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user for phone",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "getUserPhone",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "phone",
+            "in": "path",
+            "description": "Phone that need to be updated",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid user supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
       }
     }
   },
