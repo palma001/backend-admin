@@ -2,17 +2,18 @@ var admin = require('firebase-admin')
 
 const getUsersFromFirebase = (query) => {
   const listUsers = {
-    data: [],
+    content: [],
     link: null,
     metadata: {}
   }
   return new Promise((resolve, reject) => {
     try {
-      admin.auth().listUsers(Number(query.page))
+      let page = (query.page) ? query.page : 1000
+      admin.auth().listUsers(Number(page))
         .then(function(listUsersResult) {
           listUsersResult.users.forEach(function(userRecord) {
-            listUsers.data.push(userRecord.toJSON())
-            listUsers.metadata.size = listUsers.data.length
+            listUsers.content.push(userRecord.toJSON())
+            listUsers.metadata.size = listUsers.content.length
           })
           resolve(listUsers)
         })

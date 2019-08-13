@@ -7,7 +7,6 @@ const {
   updateUser,
   deleteUser,
   getUser,
-  updatePassword,
   getNumberPhone,
   getEmail
 } = require('../controllers/users.controller')
@@ -20,9 +19,6 @@ router.route('/:id')
   .get(getUser)
   .delete(deleteUser)
   .put(updateUser)
-
-router.route('/reset-password/:id')
-  .put(updatePassword)
 
 router.route('/phone/:phone')
   .get(getNumberPhone)
