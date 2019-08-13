@@ -1,4 +1,5 @@
 var admin = require('firebase-admin')
+var storage = admin.storage().bucket('gs://backend-map.appspot.com')
 
 const getUsersFromFirebase = (query) => {
   const listUsers = {
@@ -138,6 +139,30 @@ const getEmailFromFirebase = (email) => {
     }
   })
 }
+
+function addImage () {
+  var filename = 'C:/Users/develop01/Pictures/joshua-newton-305353.jpg'
+  storage
+    .upload(filename)
+    .then((res) => {
+      console.log(res.metadata)
+    })
+    .catch(err => {
+      console.error('ERROR:', err)
+    })
+}
+
+function getImage () {
+  storage.getMetadata()
+    .then((res) => {
+      res.forEach(file => {
+        console.log(file.metadata)
+      })
+    })
+}
+getImage()
+
+// addImage()
 
 module.exports = {
   getUsersFromFirebase,
