@@ -46,13 +46,16 @@ const getUserFromFirebase = (id) => {
 const createFromFirebase = (data) => {
   return new Promise((resolve, reject) => {
     try {
-      admin.auth().createUser(data)
-        .then((userRecord) => {
-          resolve(userRecord)
-        })
-        .catch((error) => {
-          resolve(error)
-        })
+      addImage(data.photoURL).then(res => {
+        data = (data.photoURL) ? data.photoURL =  res : data
+        admin.auth().createUser(data)
+          .then((userRecord) => {
+            resolve(userRecord)
+          })
+          .catch((error) => {
+            resolve(error)
+          })
+      })
     } catch (e) {
       reject(e)
     }
@@ -62,13 +65,19 @@ const createFromFirebase = (data) => {
 const updateFromFirebase = (id, data) => {
   return new Promise((resolve, rejact) => {
     try {
-      admin.auth().updateUser(id, data)
-        .then(function(userRecord) {
-          resolve(userRecord.toJSON())
-        })
-        .catch(function(error) {
-          resolve(error)
-        })
+      addImage(data.photoURL).then(res => {
+        data = (data.photoURL) ? data.photoURL =  res : data
+        admin.auth().updateUser(id, data)
+          .then(function(userRecord) {
+            resolve(userRecord.toJSON())
+          })
+          .catch(function(error) {
+            resolve(error)
+          })
+      })
+      .catch(e => {
+        console.log(e)
+      })
     } catch(e) {
       rejact(e)
     }
@@ -140,33 +149,23 @@ const getEmailFromFirebase = (email) => {
   })
 }
 
-function addImage () {
-  var filename = 'C:/Users/develop01/Pictures/luigi-colonna-351099.jpg'
-  const options = {
-    destination: 'profile',
-    resumable: true,
-    validation: 'crc32c',
-    metadata: {
-      metadata: {
-        event: 'Fall trip to the zoo'
-      }
+const addImage = (image) => {
+  return new Promise((resolve, rejact) => {
+    try {
+      storage.upload(image)
+        .then((data) => {
+          const file = data[0]
+          const url = `https://firebasestorage.googleapis.com/v0/b/${file.metadata.bucket}/o/${file.metadata.name}?alt=media`
+          resolve(url)
+        })
+        .catch(err => {
+          resolve(err)
+        })
+    } catch (error) {
+      rejact(error)
     }
-  }
-  storage.upload(filename, options)
-    .then((data) => {
-      const file = data[0]
-      console.log(file.metadata.mediaLink)
-    })
-}
-
-function getImage () {
-  storage.get().then(function(data) {
-    console.log(data[1])
   })
 }
-getImage()
-
-addImage()
 
 module.exports = {
   getUsersFromFirebase,

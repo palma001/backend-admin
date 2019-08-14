@@ -93,7 +93,7 @@
         ],
         "summary": "Get user",
         "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
+        "operationId": "getUser",
         "produces": [
           "application/json"
         ],
@@ -295,7 +295,7 @@
         "displayName": {
           "type": "string"
         },
-        "photoUrls": {
+        "photoURL": {
           "type": "string"
         },
         "disabled": {
