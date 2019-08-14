@@ -1,18 +1,20 @@
 var admin = require('firebase-admin')
+var storage = admin.storage().bucket('gs://backend-map.appspot.com')
 
 const getUsersFromFirebase = (query) => {
   const listUsers = {
-    data: [],
+    content: [],
     link: null,
     metadata: {}
   }
   return new Promise((resolve, reject) => {
     try {
-      admin.auth().listUsers(Number(query.page))
+      let page = (query.page) ? query.page : 1000
+      admin.auth().listUsers(Number(page))
         .then(function(listUsersResult) {
           listUsersResult.users.forEach(function(userRecord) {
-            listUsers.data.push(userRecord.toJSON())
-            listUsers.metadata.size = listUsers.data.length
+            listUsers.content.push(userRecord.toJSON())
+            listUsers.metadata.size = listUsers.content.length
           })
           resolve(listUsers)
         })
@@ -33,7 +35,7 @@ const getUserFromFirebase = (id) => {
           resolve(userRecord.toJSON())
         })
         .catch(function(error) {
-          reject(error)
+          resolve(error)
         })
     } catch(e) {
       reject(e)
@@ -45,12 +47,11 @@ const createFromFirebase = (data) => {
   return new Promise((resolve, reject) => {
     try {
       admin.auth().createUser(data)
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
+        .then((userRecord) => {
           resolve(userRecord)
         })
-        .catch(function(error) {
-          reject(error)
+        .catch((error) => {
+          resolve(error)
         })
     } catch (e) {
       reject(e)
@@ -66,7 +67,7 @@ const updateFromFirebase = (id, data) => {
           resolve(userRecord.toJSON())
         })
         .catch(function(error) {
-          rejact('Error updating user:', error)
+          resolve(error)
         })
     } catch(e) {
       rejact(e)
@@ -79,10 +80,10 @@ const deleteFromFirebase = (id) => {
     try {
       admin.auth().deleteUser(id)
         .then(function() {
-          resolve ('Successfully deleted user')
+          resolve('Successfully deleted user')
         })
         .catch(function(error) {
-          rejact('Error deleting user:', error)
+          resolve(error)
         })
     } catch(e) {
       rejact(e)
@@ -109,27 +110,63 @@ const updatePasswordFromFirebase = (id, email) => {
 
 const getNumberPhoneFromFirebase = (phone) => {
   return new Promise((resolve, reject) => {
-    admin.auth().getUserByPhoneNumber(phone)
-      .then(function(userRecord) {
-        resolve(userRecord.toJSON())
-      })
-      .catch(function(error) {
-        reject(error)
-      })
+    try { 
+      admin.auth().getUserByPhoneNumber(phone)
+        .then(function(userRecord) {
+          resolve(userRecord.toJSON())
+        })
+        .catch(function(error) {
+          resolve(error)
+        })
+    } catch(e) {
+      reject(e)
+    }
   })
 }
 
 const getEmailFromFirebase = (email) => {
   return new Promise((resolve, reject) => {
-    admin.auth().getUserByEmail(email)
-      .then(function(userRecord) {
-        resolve(userRecord.toJSON())
-      })
-      .catch(function(error) {
-        reject(error)
-      })
+    try {
+      admin.auth().getUserByEmail(email)
+        .then(function(userRecord) {
+          resolve(userRecord.toJSON())
+        })
+        .catch(function(error) {
+          resolve(error)
+        })
+    } catch(e) {
+      reject(e)
+    }
   })
 }
+
+function addImage () {
+  var filename = 'C:/Users/develop01/Pictures/luigi-colonna-351099.jpg'
+  const options = {
+    destination: 'profile',
+    resumable: true,
+    validation: 'crc32c',
+    metadata: {
+      metadata: {
+        event: 'Fall trip to the zoo'
+      }
+    }
+  }
+  storage.upload(filename, options)
+    .then((data) => {
+      const file = data[0]
+      console.log(file.metadata.mediaLink)
+    })
+}
+
+function getImage () {
+  storage.get().then(function(data) {
+    console.log(data[1])
+  })
+}
+getImage()
+
+addImage()
 
 module.exports = {
   getUsersFromFirebase,
