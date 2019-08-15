@@ -1,4 +1,6 @@
 var admin = require('firebase-admin')
+var jwt = require('jsonwebtoken')
+
 var storage = admin.storage().bucket('gs://backend-map.appspot.com')
 
 const getUsersFromFirebase = (query) => {
@@ -75,9 +77,9 @@ const updateFromFirebase = (id, data) => {
             resolve(error)
           })
       })
-      .catch(e => {
-        console.log(e)
-      })
+        .catch(e => {
+          console.log(e)
+        })
     } catch(e) {
       rejact(e)
     }
@@ -134,6 +136,7 @@ const getNumberPhoneFromFirebase = (phone) => {
 }
 
 const getEmailFromFirebase = (email) => {
+  // TODO: hola
   return new Promise((resolve, reject) => {
     try {
       admin.auth().getUserByEmail(email)
@@ -166,7 +169,10 @@ const addImage = (image) => {
     }
   })
 }
-
+const loginFirebase = (data) => {
+  const token = jwt.sign(data, 'my_token', { expiresIn: 30 })
+  return token
+}
 module.exports = {
   getUsersFromFirebase,
   getUserFromFirebase,
@@ -175,5 +181,6 @@ module.exports = {
   deleteFromFirebase,
   updatePasswordFromFirebase,
   getNumberPhoneFromFirebase,
-  getEmailFromFirebase
+  getEmailFromFirebase,
+  loginFirebase
 }

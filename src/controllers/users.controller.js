@@ -5,7 +5,8 @@ const {
   deleteFromFirebase,
   updateFromFirebase ,
   getNumberPhoneFromFirebase,
-  getEmailFromFirebase
+  getEmailFromFirebase,
+  loginFirebase
 } = require('../models/User')
 
 const userCtrl = {}
@@ -72,6 +73,11 @@ userCtrl.getEmail = async (req, res) => {
   } else {
     res.status(200).json(user)
   }
+}
+
+userCtrl.login = async (req, res) => {
+  const user = await loginFirebase(req.body)
+  res.json(user)
 }
 
 module.exports = userCtrl
