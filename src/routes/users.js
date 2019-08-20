@@ -1,7 +1,7 @@
 const { Router } = require('express')
 var jwt = require('jsonwebtoken')
-
 const router = Router()
+const { middleware } = require('../middleware/auth')
 
 const {
   getUsers,
@@ -14,18 +14,44 @@ const {
   login
 } = require('../controllers/users.controller')
 
-function generateToken (req, res, next) {
-  let token = req.headers['authorization']
-  if (typeof token !== 'undefined') {
-    req.token = token
-    next()
-  } else {
-    res.redirect('/api/users')
-  }
-}
+
+// function middleware(rol, fn) {
+//   router.all('*', function(req, res, next) {
+//     let token = req.headers['authorization']
+//     jwt.verify(token, 'my_token', (err, data) => {
+//       if (err) {
+//         res.sendStatus(401).json({
+//           error: true,
+//           message: 'Unauthorized'
+//         })
+//       } else {
+//         // res.json(data)
+//         next()
+//       }
+//     })
+//   })
+//   fn()
+// }
+
+router.route('/login')
+  .post(login)
+
+middleware('admin', () => {
+  router.route('/')
+    .get(getUsers)
+    .post(createUser)
+})
+
+middleware('superuser', () => {
+  router.route('/:id')
+    .get(getUser)
+    .delete(deleteUser)
+    .put(updateUser)
+})
 router.route('/admin')
-  .get(generateToken, (req, res) => {
-    jwt.verify(req.token, 'my_token', (err, data) => {
+  .get((req, res) => {
+    let token = req.headers['authorization']
+    jwt.verify(token, 'my_token', (err, data) => {
       if (err) {
         res.sendStatus(403)
       } else {
@@ -36,19 +62,6 @@ router.route('/admin')
       }
     })
   })
-
-router.route('/')
-  .get(getUsers)
-  .post(createUser)
-
-router.route('/login')
-  .post(login)
-
-router.route('/:id')
-  .get(getUser)
-  .delete(deleteUser)
-  .put(updateUser)
-
 router.route('/phone/:phone')
   .get(getNumberPhone)
 

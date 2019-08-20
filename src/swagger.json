@@ -30,6 +30,35 @@
     "https"
   ],
   "paths": {
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Login",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "login",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
     "/users": {
       "get": {
         "tags": [
@@ -47,7 +76,13 @@
         		"description": "Number of page",
         		"type": "integer",
             "format": "int64"
-        	}
+        	},
+          {
+            "type": "string",
+            "name": "authorization",
+            "in": "header",
+            "required": true
+          }
         ], 
         "responses": {
           "200": {
@@ -259,22 +294,6 @@
       }
     }
   },
-  "securityDefinitions": {
-    "petstore_auth": {
-      "type": "oauth2",
-      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
-      "flow": "implicit",
-      "scopes": {
-        "write:pets": "modify pets in your account",
-        "read:pets": "read your pets"
-      }
-    },
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
-      "in": "header"
-    }
-  },
   "definitions": {
     "Users": {
       "type": "object",
@@ -300,6 +319,20 @@
         },
         "disabled": {
         	"type": "boolean"
+        }
+      }
+    },
+    "login": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "required": true,
+          "example": "example@example.com"
+        },
+        "password": {
+          "type": "string",
+          "required": true
         }
       }
     }

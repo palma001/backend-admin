@@ -136,7 +136,6 @@ const getNumberPhoneFromFirebase = (phone) => {
 }
 
 const getEmailFromFirebase = (email) => {
-  // TODO: hola
   return new Promise((resolve, reject) => {
     try {
       admin.auth().getUserByEmail(email)
@@ -144,7 +143,7 @@ const getEmailFromFirebase = (email) => {
           resolve(userRecord.toJSON())
         })
         .catch(function(error) {
-          resolve(error)
+          reject(error)
         })
     } catch(e) {
       reject(e)
@@ -170,8 +169,24 @@ const addImage = (image) => {
   })
 }
 const loginFirebase = (data) => {
-  const token = jwt.sign(data, 'my_token', { expiresIn: 30 })
-  return token
+  data.rol = 'admin'
+  admin.createUserWithEmailAndPassword('hola', 'hola')
+    .catch(err => {
+      console.log(err)
+    })
+  // return new Promise((resolve, reject) => {
+  //   getEmailFromFirebase(data.email)
+  //     .then(user => {
+  //       const token = jwt.sign(user, 'my_token')
+  //       let response = {
+  //         token: token
+  //       }
+  //       resolve(response)
+  //     })
+  //     .catch(error => {
+  //       resolve(error)
+  //     })
+  // })
 }
 module.exports = {
   getUsersFromFirebase,
