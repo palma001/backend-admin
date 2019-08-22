@@ -1,6 +1,6 @@
 var admin = require('firebase-admin')
 var jwt = require('jsonwebtoken')
-
+var { getAll } = require('./Common')
 var storage = admin.storage().bucket('gs://backend-map.appspot.com')
 
 const getUsersFromFirebase = (query) => {
@@ -18,7 +18,7 @@ const getUsersFromFirebase = (query) => {
             listUsers.content.push(userRecord.toJSON())
             listUsers.metadata.size = listUsers.content.length
           })
-          resolve(listUsers)
+          resolve(getAll(listUsers, query))
         })
         .catch(function(error) {
           reject(error)
@@ -170,23 +170,19 @@ const addImage = (image) => {
 }
 const loginFirebase = (data) => {
   data.rol = 'admin'
-  admin.createUserWithEmailAndPassword('hola', 'hola')
-    .catch(err => {
-      console.log(err)
-    })
-  // return new Promise((resolve, reject) => {
-  //   getEmailFromFirebase(data.email)
-  //     .then(user => {
-  //       const token = jwt.sign(user, 'my_token')
-  //       let response = {
-  //         token: token
-  //       }
-  //       resolve(response)
-  //     })
-  //     .catch(error => {
-  //       resolve(error)
-  //     })
-  // })
+  return new Promise((resolve, reject) => {
+    getEmailFromFirebase(data.email)
+      .then(user => {
+        const token = jwt.sign(user, 'my_token')
+        let response = {
+          token: token
+        }
+        resolve(response)
+      })
+      .catch(error => {
+        resolve(error)
+      })
+  })
 }
 module.exports = {
   getUsersFromFirebase,
