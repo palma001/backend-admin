@@ -33,7 +33,7 @@ function urlFormat (query) {
   return queryFormated
 }
 
-const generyFilter = (data, query, callback) => {
+const generyFilter = (data, query) => {
   let params = urlFormat(query.stringFilter)
   let dataAll = data.content
   for(let key in params[0]) {
@@ -41,26 +41,36 @@ const generyFilter = (data, query, callback) => {
       return dataAll
     }
     dataAll = dataAll.filter(element => {
-      return callback(element[key], params[0][key], params[1])
+      return filterQuery(element[key], params[0][key], params[1])
     })
   }
   return dataAll
 }
 
-const requestQuery = (data, query) => {
-  return generyFilter(data, query, (element, param, sign) => {
-    switch (sign) {
-    case '#':
-      return String(element).includes(param)
-    default:
-    case ':':
-      return element === param
-    }
-  })
+const filterQuery = (element, param, sign) => {
+  switch (sign) {
+  case '#':
+    return String(element).includes(param)
+  default:
+  case ':':
+    return element === param
+  }
+}
+
+const generySearch = (data, query) => {
+  let params = urlFormat(query.stringSearch)
+  let dataAll = []
+  for(let key in params[0]) {
+    dataAll.push(data.content.filter(element => {
+      return filterQuery(element[key], params[0][key], params[1])
+    }))
+  }
+  return dataAll[0]
 }
 
 const getAll = (data, query) => {
-  requestQuery(data, query)
+  // return generyFilter(data, query)
+  return generySearch(data, query)
 }
 
 module.exports = {

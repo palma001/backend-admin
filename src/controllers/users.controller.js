@@ -13,7 +13,11 @@ const userCtrl = {}
 
 userCtrl.getUsers = async (req, res) => {
   const users = await getUsersFromFirebase(req.query)
-  res.json(users)
+  if (users.error) {
+    res.status(204).json({ error: true, message: 'Data empty' })
+  } else {
+    res.json(users)
+  }
 }
 
 userCtrl.getUser = async (req, res) => {

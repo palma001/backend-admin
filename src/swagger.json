@@ -78,6 +78,18 @@
             "format": "int64"
         	},
           {
+            "name": "stringFilter",
+            "in": "query",
+            "description": "Filter",
+            "type": "string"
+          },
+          {
+            "name": "stringSearch",
+            "in": "query",
+            "description": "Search",
+            "type": "string"
+          },
+          {
             "type": "string",
             "name": "authorization",
             "in": "header",
@@ -87,6 +99,9 @@
         "responses": {
           "200": {
             "description": "successful operation"
+          },
+          "204": {
+            "description": "data empty"
           },
           "404": {
             "description": "User not found"

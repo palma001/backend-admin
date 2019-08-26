@@ -18,7 +18,10 @@ const getUsersFromFirebase = (query) => {
             listUsers.content.push(userRecord.toJSON())
             listUsers.metadata.size = listUsers.content.length
           })
-          resolve(getAll(listUsers, query))
+          if (getAll(listUsers, query).length > 0) {
+            resolve(getAll(listUsers, query))
+          }
+          resolve({ error: true, message: 'list empty' })
         })
         .catch(function(error) {
           reject(error)
